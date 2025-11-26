@@ -1,0 +1,96 @@
+class Node {
+    int value;
+    Node left;
+    Node right;
+    
+    Node(int num) {
+        value = num;
+        left = null;
+        right = null;
+    }
+}
+
+class SimpleTree {
+    Node root;
+    
+    void add(int num) {
+        root = addNode(root, num);
+    }
+    
+    private Node addNode(Node current, int num) {
+        if (current == null) {
+            return new Node(num);
+        }
+        
+        if (num < current.value) {
+            current.left = addNode(current.left, num);
+        } else if (num > current.value) {
+            current.right = addNode(current.right, num);
+        }
+        
+        return current;
+    }
+    
+    Node findIth(int i) {
+        Counter counter = new Counter();
+        return findIthNode(root, i, counter);
+    }
+    
+    private Node findIthNode(Node current, int i, Counter counter) {
+        if (current == null) {
+            return null;
+        }
+        
+        Node leftResult = findIthNode(current.left, i, counter);
+        if (leftResult != null) {
+            return leftResult;
+        }
+        
+        counter.count++;
+        if (counter.count == i) {
+            return current;
+        }
+        
+        return findIthNode(current.right, i, counter);
+    }
+    
+    void printInOrder() {
+        printNode(root);
+        System.out.println();
+    }
+    
+    private void printNode(Node current) {
+        if (current != null) {
+            printNode(current.left);
+            System.out.print(current.value + " ");
+            printNode(current.right);
+        }
+    }
+}
+
+class Counter {
+    int count = 0;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SimpleTree tree = new SimpleTree();
+        
+        int[] numbers = {17, 6, 5, 20, 19, 18, 11, 14, 12, 13, 2, 4, 10};
+        
+        for (int num : numbers) {
+            tree.add(num);
+        }
+        
+        System.out.println("Дерево в порядке возрастания:");
+        tree.printInOrder();
+        
+        System.out.println("\nПоиск элементов по порядку:");
+        for (int i = 1; i <= 8; i++) {
+            Node result = tree.findIth(i);
+            if (result != null) {
+                System.out.println(i + "-й элемент: " + result.value);
+            }
+        }
+    }
+}
